@@ -1,0 +1,142 @@
+package heap;
+
+public class MinHeap {
+
+	int cap = 5;
+	int items[] = new int[cap];
+	int size;
+
+	public void ensureCap() {
+		if (cap == size) {
+			cap = cap * 2;
+			int aa[] = new int[cap];
+			for (int i = 0; i < size; i++) {
+				aa[i] = items[i];
+			}
+			items = aa;
+
+		}
+	}
+
+	public int getLCIndex(int p) {
+		return p * 2 + 1;
+	}
+
+	public int getRCIndex(int p) {
+		return p * 2 + 2;
+	}
+
+	public int getPIndex(int i) {
+		return (i - 1) / 2;
+	}
+
+	public boolean hasLC(int p) {
+		return getLCIndex(p) < size;
+	}
+
+	public boolean hasRC(int p) {
+		return getRCIndex(p) < size;
+	}
+
+	public boolean hasParent(int i) {
+		return getPIndex(i) >= 0;
+	}
+
+	/*
+	 * public int lC(int p){return items[getLCIndex(p)];} public int rC(int
+	 * p){return items[getRCIndex(p)];} public int p(int i){return
+	 * items[getPIndex(i)];}
+	 */
+
+	public void swap(int p, int c) { //
+		int t = items[p];
+		items[p] = items[c];
+		items[c] = t;
+	}
+
+	public int peek() {
+		if (size == 0)
+			throw new IllegalStateException();
+		return items[0];
+	}
+
+	public int remove() {
+		if (size == 0)
+			throw new IllegalStateException();
+		int a = items[0];
+		items[0] = items[--size];
+		heapifyDown(0);
+		return a;
+	}
+
+	public void add(int e) {
+		ensureCap();
+		int c = size;
+		items[size++] = e;
+		heapifyUp(c);
+
+	}
+
+	public void heapifyDown(int p) {
+		if (hasRC(p)) {
+			if (items[p] > items[getRCIndex(p)]) {
+				swap(p, getRCIndex(p));
+				if (hasRC(p))
+					heapifyDown(getRCIndex(p));
+				if (hasLC(p))
+					heapifyDown(getLCIndex(p));
+			}
+		}
+
+		if (hasLC(p)) {
+			if (items[p] > items[getLCIndex(p)]) {
+				swap(p, getLCIndex(p));
+				if (hasRC(p))
+					heapifyDown(getRCIndex(p));
+				if (hasLC(p))
+					heapifyDown(getLCIndex(p));
+			}
+		}
+	}
+
+	public void heapifyUp(int c) {
+		while (c != 0 && hasParent(c)) {
+			if (items[c] < items[getPIndex(c)]) {
+				swap(c, getPIndex(c));
+			}
+			c = getPIndex(c);
+		}
+	}
+
+	public void print() {
+		for (int i = 0; i < size; i++) {
+			System.out.print(items[i]);
+		}
+		System.out.println();
+	}
+
+	public static void main(String[] args) {
+		MinHeap h = new MinHeap();
+		h.add(1);
+		h.add(8);
+		h.add(3);
+		h.print();
+		h.add(0);
+		h.print();
+
+		h.add(9);
+		h.add(7);
+		h.print();
+
+		h.add(2);
+		h.print();
+
+		h.remove();
+		h.print();
+		h.remove();
+		h.print();
+		System.out.println(h.cap + " " + h.size);
+	}
+
+}
+-
